@@ -2,7 +2,8 @@ import { auth, signIn, signOut } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import options from './../../node_modules/preact/src/options';
+import { Button } from "./ui/button";
+
 
 const Navbar = async () => {
   const session = await auth();
@@ -19,13 +20,13 @@ const Navbar = async () => {
                 <span>Create</span>
               </Link>
 
-              <form action={
-                async () => {
+              <form
+                action={async () => {
                   "use server";
-                  await signOut({redirectTo:"/"})
-                }
-              }>
-                <button type="submit">Logout</button>
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
+                <Button type="submit">Logout</Button>
               </form>
               <Link href={`/user/${session?.id}`}>
                 <span>{session?.user?.name}</span>
@@ -38,7 +39,7 @@ const Navbar = async () => {
                 await signIn("github");
               }}
             >
-              <button type="submit">Login</button>
+              <Button type="submit">Login</Button>
             </form>
           )}
         </div>
