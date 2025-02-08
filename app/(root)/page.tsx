@@ -1,6 +1,9 @@
 import React from "react";
 import SearchForm from "../../components/SearchForm";
-import StartUpCard from "@/components/StartUpCard";
+import StartUpCard,{StartupTypeCard} from "@/components/StartUpCard";
+import { STARTUPS_QUERY } from "@/sanity/lib/queries";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import { auth } from "@/auth";
 
 const Home = async ({
   searchParams,
@@ -8,24 +11,17 @@ const Home = async ({
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-  const posts = [
-    {
-      _createdAt: new Date,
-      views: 55,
-      author: { _id: 1, name: "YYH" },
-      _id: 1,
-      description: "This is a description",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677094310899-02303289cadf?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      category: "Robots",
-      title: "We Robots",
-    },
-  ];
+  const params = {search: query || null}
+  const session = await auth()
+
+  console.log(session?.id);
+
+  const {data : posts} = await sanityFetch({query: STARTUPS_QUERY, params})
   return (
     <>
       <section className="pink_container">
         <h1 className="heading">
-          Pitch Your Startup <br /> Connect with Enterpreneurs
+          Pitch Your Startup <br /> Connect with Entrepreneurs
         </h1>
 
         <p className="sub-heading !max-w-3xl">
@@ -40,13 +36,16 @@ const Home = async ({
           </p>
           <ul className="mt-7 card_grid">
             {posts?.length > 0 ? (
-              posts.map((post: StartupTypeCard, index: number) => (<StartUpCard key={post?._id} post={post}/>))
-            ):(
+              posts.map((post: StartupTypeCard, index: number) => (
+                <StartUpCard key={post?._id} post={post} />
+              ))
+            ) : (
               <p className="no-results">No Startups found</p>
             )}
           </ul>
         </section>
       </section>
+      <SanityLive/>
     </>
   );
 };
