@@ -39,8 +39,8 @@ const Navbar = async () => {
               <Avatar className="size-10">
                 <AvatarImage src={session?.user?.image || ""}
                 alt={session?.user?.name || ""}/>
-              </Avatar>
               <AvatarFallback>AV</AvatarFallback>
+              </Avatar>
               </Link>
             </>
           ) : (
