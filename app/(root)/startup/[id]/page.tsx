@@ -18,12 +18,14 @@ const md = markdownit();
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
 
-  const [post, { select: editorPosts }] = await Promise.all([
+  const [post, test] = await Promise.all([
     client.fetch(STARTUP_BY_ID_QUERY, { id }),
     client.fetch(PLAYLIST_BY_SLUG_QUERY, {
       slug: "editor-picks-news",
     }),
   ]);
+
+  const {select : editorPosts}= test ?? {};
 
   if (!post) return notFound();
   const parsedContent = md.render(post?.pitch || null);
@@ -38,6 +40,8 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <section className="section_container">
         <Image
           src={post.image}
+          width={64}
+          height={64}
           alt="thumbnail"
           className="w-full h-auto rounded-xl"
         />
